@@ -5,16 +5,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
-
+import 'swiper/css/navigation';
 import './index.scss';
 
 // import required modules
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export default function Carousel({ numberOfSlide, category }) {
+export default function Carousel({ numberOfSlide, category, isUseNavigation = false, title }) {
     const [movies, setMovies] = useState([]);
+
     async function fetchMovie() {
         const response = await axios.get("https://6627a8d4b625bf088c092eba.mockapi.io/Movie");
         console.log(response.data);
@@ -24,11 +25,14 @@ export default function Carousel({ numberOfSlide, category }) {
         fetchMovie();
     }, []);
     return (
-        <div className='carousel'>
+        <div className={`carousel ${numberOfSlide > 1 ? "multi-item" : ""}`}>
+            {/* chỉ show title khi và chỉ khi có title => title === null => ko show*/}
+            {title && <h1>{title}</h1>}
             <Swiper pagination={true}
+                navigation={isUseNavigation}
                 slidesPerView={numberOfSlide}
                 spaceBetween={10}
-                modules={[Pagination, Autoplay]}
+                modules={[Pagination, Autoplay, Navigation]}
                 className="mySwiper" autoplay={{
                     delay: 2500,
                     disableOnInteraction: false,
